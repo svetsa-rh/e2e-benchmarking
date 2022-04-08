@@ -52,6 +52,6 @@ spec:
           value: "{{.numberOfRouters}}"
         command:
         - sleep
-        - inf
+        - 365d
         image: quay.io/svetsa/mb:multiarch
         name: mb
