@@ -8,7 +8,7 @@ metadata:
 spec:
   nodeSelector: {{.nodeSelector}}
   containers:
-  - image: quay.io/openshift-scale/nginx
+  - image: quay.io/svetsa/nginx:multiarch
     name: nginx
     resources:
       requests:
