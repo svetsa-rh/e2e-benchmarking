@@ -63,7 +63,7 @@ tune_workload_node(){
 
 collect_metadata(){
   log "Collecting metadata for UUID: ${UUID}"
-  git clone -b backpack_multiarch https://github.com/svetsa-rh/metadata-collector.git --depth=1
+  git clone https://github.com/cloud-bulldozer/metadata-collector.git --depth=1
   pushd metadata-collector
   ./run_backpack.sh -x -c true -s ${ES_SERVER} -u ${UUID}
   popd
