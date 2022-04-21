@@ -53,5 +53,5 @@ spec:
         command:
         - sleep
         - inf
-        image: quay.io/svetsa/mb:multiarch
+        image: quay.io/cloud-bulldozer/mb:latest
         name: mb
