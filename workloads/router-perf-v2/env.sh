@@ -13,6 +13,7 @@ METADATA_COLLECTION=${METADATA_COLLECTION:-true}
 ENGINE=${ENGINE:-podman}
 KUBE_BURNER_RELEASE_URL=${KUBE_BURNER_RELEASE_URL:-https://github.com/cloud-bulldozer/kube-burner/releases/download/v0.11/kube-burner-0.11-Linux-x86_64.tar.gz}
 KUBE_BURNER_IMAGE=quay.io/cloud-bulldozer/kube-burner:latest
+#HAPROXY_IMAGE="quay.io/cloud-bulldozer/openshift-router-perfscale:-haproxy-v2.2.20"
 TERMINATIONS=${TERMINATIONS:-"http edge passthrough reencrypt mix"}
 INFRA_TEMPLATE=http-perf.yml.tmpl
 INFRA_CONFIG=http-perf.yml
@@ -29,7 +30,6 @@ KUBERNETES_MAJOR_VERSION=$(oc version -o json |  jq -r '.serverVersion.major')
 KUBERNETES_MINOR_VERSION=$(oc version -o json |  jq -r '.serverVersion.minor')
 export KUBERNETES_VERSION=${KUBERNETES_MAJOR_VERSION}.${KUBERNETES_MINOR_VERSION}
 export CLUSTER_NETWORK_TYPE=$(oc get network.config/cluster -o jsonpath='{.spec.networkType}')
-export CLOUD_TYPE=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.type}')
 export PLATFORM_STATUS=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus}')
 
 # Benchmark configuration

@@ -8,6 +8,7 @@ import csv
 import numpy
 import argparse
 import json
+import ssl
 
 # Environment vars
 es_server = os.getenv("ES_SERVER")
@@ -20,7 +21,6 @@ cluster_name = os.getenv("CLUSTER_NAME", "")
 openshift_version = os.getenv("OPENSHIFT_VERSION", "")
 kubernetes_version = os.getenv("KUBERNETES_VERSION", "")
 network_type = os.getenv("CLUSTER_NETWORK_TYPE", "")
-cloud_type = os.getenv("CLOUD_TYPE", "")
 platform_status = os.getenv("PLATFORM_STATUS", "{}")
 
 
@@ -28,7 +28,11 @@ def index_result(payload, retry_count=3):
     print(f"Indexing documents in {es_index}")
     while retry_count > 0:
         try:
-            es = elasticsearch.Elasticsearch([es_server], send_get_body_as='POST')
+            ssl_ctx = ssl.create_default_context()
+            ssl_ctx.check_hostname = False
+            ssl_ctx.verify_mode = ssl.CERT_NONE
+            es = elasticsearch.Elasticsearch([es_server], send_get_body_as='POST',
+                                             ssl_context=ssl_ctx, use_ssl=True)
             es.index(index=es_index, body=payload)
             retry_count = 0
         except Exception as e:
@@ -66,23 +70,23 @@ def run_mb(mb_config, runtime, output):
         print("Warning: Empty latency result list, returning 0")
         return result_codes, 0, 0, 0
 
-def get_cluster_type():
-    unknown_value = "N/A"
-    if cloud_type != "AWS":
-        return unknown_value
+def get_cluster_platform():
+    platform = "N/A"
     try:
         platform_status_json = json.loads(platform_status)
     except json.decoder.JSONDecodeError:
         print("Warning: error decoding", platform_status)
-        return unknown_value
-    aws_data = platform_status_json["aws"]
-    if "resourceTags" not in aws_data:
-        return unknown_value
-    for tag in aws_data["resourceTags"]:
-        if tag["key"] == "red-hat-clustertype":
-            return tag["value"]
-    return unknown_value
-
+        return platform
+    if "type" in platform_status_json:
+        platform = platform_status_json["type"]
+        if platform == "AWS":
+            if "aws" in platform_status_json:
+                aws_data = platform_status_json["aws"]
+                if "resourceTags" in aws_data:
+                    for tag in aws_data["resourceTags"]:
+                        if tag["key"] == "red-hat-clustertype":
+                            platform = tag["value"].upper()
+    return platform
 
 def main():
     parser = argparse.ArgumentParser()
@@ -104,8 +108,7 @@ def main():
                "cluster.ocp_version": openshift_version,
                "cluster.kubernetes_version": kubernetes_version,
                "cluster.sdn": network_type,
-               "cluster.platform": cloud_type,
-               "cluster.type": get_cluster_type(),
+               "cluster.platform": get_cluster_platform(),
                "requests_per_second": int(requests_per_second),
                "avg_latency": int(avg_latency),
                "latency_95pctl": int(p95_latency),
