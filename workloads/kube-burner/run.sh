@@ -117,7 +117,7 @@ if [[ ${PPROF_COLLECTION} == "true" ]] ; then
   get_pprof_secrets
 fi
 
-if [[ ${WORKLOAD} -eq "concurrent-builds" ]]; then
+if [[ ${WORKLOAD} == "concurrent-builds" ]]; then
    app_array=($APP_LIST)
    for app in "${app_array[@]}"
     do
@@ -140,4 +140,5 @@ if [[ ${ENABLE_SNAPPY_BACKUP} == "true" ]] ; then
   snappy_backup kube-burner-${WORKLOAD}
 fi
 
+remove_benchmark_operator ${OPERATOR_REPO} ${OPERATOR_BRANCH}
 exit ${rc}

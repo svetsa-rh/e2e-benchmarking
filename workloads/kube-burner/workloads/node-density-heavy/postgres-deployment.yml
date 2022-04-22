@@ -11,7 +11,7 @@ spec:
       nodeSelector: {{.nodeSelector}}
       containers:
       - name: postgresql
-        image: registry.redhat.io/rhscl/postgresql-10-rhel7:latest
+        image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
         ports:
         - containerPort: 5432
           protocol: TCP
@@ -25,9 +25,10 @@ spec:
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: false
-        requests:
-          memory: "20Mi"
-          cpu: "20m"
+        resources:
+          requests:
+            memory: "20Mi"
+            cpu: "20m"
       restartPolicy: Always
   replicas: 1
   selector:
