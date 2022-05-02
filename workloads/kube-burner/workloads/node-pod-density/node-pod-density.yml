@@ -76,5 +76,5 @@ jobs:
       - objectTemplate: pod.yml
         replicas: 1
         inputVars:
-          containerImage: quay.io/svetsa/pause:multiarch
+          containerImage: k8s.gcr.io/pause:3.1
           nodeSelector: "${POD_NODE_SELECTOR}"
