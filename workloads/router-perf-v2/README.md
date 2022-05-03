@@ -39,7 +39,7 @@ It's possible to tune the default configuration through environment variables. T
 | Variable              | Description     | Default	          |
 |-----------------------|-----------------|-------------------|
 | KUBECONFIG            | Kubeconfig file | `~/.kube/config` |
-| ENGINE                | Engine to spin up the local kube-burner container that creates the required infrastructure, if you set this to `local` it will try to download kube-burner binary locally using `KUBE_BURNER_RELEASE_URL` and use that instead of creating a container. | `podman` |
+| ENGINE                | Engine to spin up the local kube-burner container that creates the required infrastructure, if you set this to `local` it will try to download kube-burner binary locally using `KUBE_BURNER_RELEASE_URL` and use that instead of creating a container. | `local` |
 | RUNTIME               | Workload duration in seconds | `60` |
 | TERMINATIONS          | List of HTTP terminations to test | `http edge passthrough reencrypt mix` |
 | URL_PATH              | URL path to use in the benchmark | `/1024.html` |
@@ -52,6 +52,7 @@ It's possible to tune the default configuration through environment variables. T
 | LARGE_SCALE_ROUTES    | Number of routes of each termination to create in the large scale scenario | `500` |
 | LARGE_SCALE_CLIENTS   | Threads/route to use in the large scale scenario | `1 20 80` |
 | LARGE_SCALE_CLIENTS_MIX | Threads/route to use in the large scale scenario with mix termination | `1 10 20` |
+| DEPLOYMENT_REPLICAS   | Number of replicas per deployment when using deployments rather than pods | `10` |
 | TLS_REUSE             | Reuse TLS session | `true` |
 | SAMPLES               | Number of samples to perform of each test | `2` |
 | HOST_NETWORK          | Enable hostNetwork in the mb client | `true` |
@@ -62,6 +63,8 @@ It's possible to tune the default configuration through environment variables. T
 | ES_INDEX              | Elasticsearch index | `router-test-results` |
 | SERVICE_TYPE          | K8S service type to use | `NodePort` |
 | METADATA_COLLECTION   | Collect metadata prior to trigger the workload | `true` |
+| HAPROXY_IMAGE         | Variable to override the default HAProxy container image | unset |
+| INGRESS_OPERATOR_IMAGE     | Variable to override the default ingress-operator container image | unset |
 
 ### Benchmark-comparison variables:
 

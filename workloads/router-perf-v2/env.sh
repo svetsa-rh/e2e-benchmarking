@@ -10,13 +10,16 @@ export ES_INDEX=${ES_INDEX:-router-test-results}
 NUM_NODES=$(oc get node -l node-role.kubernetes.io/worker,node-role.kubernetes.io/workload!=,node-role.kubernetes.io/infra!= --no-headers | grep -cw Ready)
 LARGE_SCALE_THRESHOLD=${LARGE_SCALE_THRESHOLD:-24}
 METADATA_COLLECTION=${METADATA_COLLECTION:-true}
-ENGINE=${ENGINE:-podman}
-KUBE_BURNER_RELEASE_URL=${KUBE_BURNER_RELEASE_URL:-https://github.com/cloud-bulldozer/kube-burner/releases/download/v0.11/kube-burner-0.11-Linux-x86_64.tar.gz}
+ENGINE=${ENGINE:-local}
+KUBE_BURNER_RELEASE_URL=${KUBE_BURNER_RELEASE_URL:-https://github.com/cloud-bulldozer/kube-burner/releases/download/v0.15.4/kube-burner-0.15.4-Linux-x86_64.tar.gz}
 KUBE_BURNER_IMAGE=quay.io/cloud-bulldozer/kube-burner:latest
 #HAPROXY_IMAGE="quay.io/cloud-bulldozer/openshift-router-perfscale:-haproxy-v2.2.20"
-TERMINATIONS=${TERMINATIONS:-"http edge passthrough reencrypt mix"}
-INFRA_TEMPLATE=http-perf.yml.tmpl
-INFRA_CONFIG=http-perf.yml
+#INGRESS_OPERATOR_IMAGE="quay.io/cloud-bulldozer/openshift-cluster-ingress-operator:balance-random"
+export TERMINATIONS=${TERMINATIONS:-"http edge passthrough reencrypt mix"}
+INFRA_TEMPLATE=${INFRA_TEMPLATE:-"http-perf.yml.tmpl"}
+export DEPLOYMENT_REPLICAS=${DEPLOYMENT_REPLICAS:-10}
+#export SMALL_SCALE_ROUTES=10
+#export LARGE_SCALE_ROUTES=50
 export SERVICE_TYPE=${SERVICE_TYPE:-NodePort}
 export NUMBER_OF_ROUTERS=${NUMBER_OF_ROUTERS:-2}
 export HOST_NETWORK=${HOST_NETWORK:-true}
@@ -53,7 +56,7 @@ fi
 if [[ -v COMPARISON_OUTPUT_CFG ]]; then
   COMPARISON_OUTPUT=${COMPARISON_OUTPUT_CFG}
 else
-  COMPARISON_OUTPUT=${PWD}/ingress-performance.csv
+  COMPARISON_OUTPUT=${PWD}/ingress-performance-${UUID}.csv
 fi
 
 GSHEET_KEY_LOCATION=${GSHEET_KEY_LOCATION}

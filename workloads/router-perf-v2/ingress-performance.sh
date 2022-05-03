@@ -7,6 +7,7 @@ get_scenario
 deploy_infra
 tune_workload_node apply
 client_pod=$(oc get pod -l app=http-scale-client -n http-scale-client | awk '/Running/{print $1}')
+configure_ingress_images
 tune_liveness_probe
 if [[ ${METADATA_COLLECTION} == "true" ]]; then
   collect_metadata
@@ -32,10 +33,9 @@ done
 enable_ingress_operator
 log "Copying mb test results locally (large file)"
 until oc rsync -n http-scale-client ${client_pod}:/tmp/results.csv ./; do
-  echo Tansfer disrupted, retrying in 10 seconds...
+  echo "Transfer disrupted, retrying in 10 seconds..."
   sleep 10
 done
-
 
 tune_workload_node delete
 cleanup_infra
