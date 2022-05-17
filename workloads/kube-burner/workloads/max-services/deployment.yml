@@ -15,7 +15,7 @@ spec:
       nodeSelector: {{.nodeSelector}}
       containers:
       - name: {{.name}}
-        image: quay.io/cloud-bulldozer/hello-openshift:latest
+        image: quay.io/svetsa/hello-openshift:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
